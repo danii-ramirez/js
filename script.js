@@ -18,102 +18,81 @@ const productsList = [
   new Producto(7, "Ryzen 3", "AMD", "Procesador", 50000),
   new Producto(8, "Ryzen 5", "AMD", "Procesador", 65000),
   new Producto(9, "Ryzen 7", "AMD", "Procesador", 85000),
-  new Producto(10, "i3", "Intel", "Procesador", 55000),
-  new Producto(11, "i5", "Intel", "Procesador", 75000),
-  new Producto(12, "i7", "Intel", "Procesador", 95000),
-  new Producto(13, "8GB", "Corsair", "Memoria RAM", 10000),
-  new Producto(14, "16GB", "Corsair", "Memoria RAM", 20000),
-  new Producto(15, "8GB", "GIGABITY", "Memoria RAM", 10000),
-  new Producto(16, "16GB", "GIGABITY", "Memoria RAM", 20000),
+  new Producto(10, "Intel Core i3", "Intel", "Procesador", 55000),
+  new Producto(11, "Intel Core i5", "Intel", "Procesador", 75000),
+  new Producto(12, "Intel Core i7", "Intel", "Procesador", 95000),
+  new Producto(13, "Memoria RAM Corsair 8GB", "Corsair", "Memoria RAM", 10000),
+  new Producto(14, "Memoria RAM Corsair 16GB", "Corsair", "Memoria RAM", 20000),
+  new Producto(
+    15,
+    "Memoria RAM GIGABITY 8GB",
+    "GIGABITY",
+    "Memoria RAM",
+    10000
+  ),
+  new Producto(
+    16,
+    "Memoria RAM GIGABITY 16GB",
+    "GIGABITY",
+    "Memoria RAM",
+    20000
+  ),
 ];
 
 const carrito = [];
 
-function mostrarMenu() {
-  let menu =
-    "Selecione una opción:\n 1 - Mostrar todos los productos\n 2 - Buscar por categoria\n 3 - Buscar por marca\n 4 - Buscar por producto\n 5 - Ver carrito";
-  let opcion;
-
-  opcion = prompt(menu);
-
-  if (opcion === undefined || isNaN(opcion) || opcion < 1 || opcion > 5) {
-    alert("Opción incorrecta, debe ingresar una opción valida");
-    mostrarMenu();
-  } else {
-    if (opcion == 1) {
-      mostarProductos();
-    } else if (opcion == 2) {
-      mostrarProductosPorCategoria();
-    } else if (opcion == 5) {
-      mostarCarrito();
-    }
-  }
-}
-
-mostrarMenu();
-
-function mostarProductos() {
-  let opcion;
-  let menu = "Selecione una opión:\n";
-
-  for (const p of productsList) {
-    menu += ` ${p.id} - ${p.nombre} - ${p.precio}\n`;
-  }
-
-  menu += ` ${0} - atras`;
-
-  opcion = Number.parseInt(prompt(menu));
-
-  if (opcion === undefined || isNaN(opcion) || opcion < 0) {
-    alert("Opción incorrecta, debe ingresar una opción valida");
-    mostarProductos();
-  } else {
-    if (opcion == 0) {
-      mostrarMenu();
+function groupBy(list, keyGetter) {
+  const map = new Map();
+  list.forEach((item) => {
+    const key = keyGetter(item);
+    const collection = map.get(key);
+    if (!collection) {
+      map.set(key, [item]);
     } else {
-      let producto = productsList.find((x) => x.id == opcion);
-      if (producto === undefined) {
-        alert("Opción incorrecta");
-        mostarProductos();
-      } else {
-        carrito.push(
-          new Producto(
-            producto.id,
-            producto.nombre,
-            producto.marca,
-            producto.categoria,
-            producto.precio
-          )
-        );
-
-        mostrarMenu();
-      }
+      collection.push(item);
     }
-  }
+  });
+  return map;
 }
 
-function mostarCarrito() {
-  if (carrito.length == 0) {
-    alert("No hay productos en el carrio");
-    mostrarMenu();
-  } else {
-    let mensaje = "";
-    for (const p of carrito) {
-      mensaje += `nombre: ${p.nombre} - precio: ${p.precio}`;
-    }
+// const filtros = groupBy(productsList, (x) => x.marca);
 
-    alert(mensaje);
-  }
-}
+// console.log(filtros.keys((x) => console.log(x)));
 
-function mostrarProductosPorCategoria(categoria) {
-  let list = productsList.filter((x) => x.categoria == categoria);
-}
+// filtros.forEach((x) => console.log(x));
 
-function mostrarProductosPorMarcas(marca) {
-  let list = productsList.filter((x) => x.marca == marca);
-}
+let divFiltros = document.createElement("div");
 
-function buscarProducto(nombre) {
-  let list = productsList.filter((x) => x.nombre == nombre);
-}
+let divProductos = document.getElementById("productos");
+
+productsList.forEach((x) => {
+  let divProducto = document.createElement("div");
+  divProducto.className = "col-4 my-2";
+
+  let divCard = document.createElement("div");
+  divCard.className = "card";
+  divProducto.append(divCard);
+
+  let cardBody = document.createElement("div");
+  cardBody.className = "card-body";
+  divCard.append(cardBody);
+
+  let cardTitle = document.createElement("h5");
+  cardTitle.className = "card-title";
+  cardTitle.innerText = x.nombre;
+  cardBody.append(cardTitle);
+
+  let cardText = document.createElement("p");
+  cardText.className = "card-text";
+  cardText.innerHTML = `$${x.precio}`;
+  cardBody.append(cardText);
+
+  let cardButton = document.createElement("button");
+  cardButton.type = "button";
+  cardButton.className = "btn btn-primary";
+  cardButton.textContent = "comprar";
+  cardButton.id = x.id;
+  cardBody.append(cardButton);
+
+  divProductos.append(divProducto);
+});
