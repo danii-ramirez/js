@@ -41,27 +41,19 @@ const productsList = [
 
 const carrito = [];
 
-function groupBy(list, keyGetter) {
-  const map = new Map();
-  list.forEach((item) => {
-    const key = keyGetter(item);
-    const collection = map.get(key);
-    if (!collection) {
-      map.set(key, [item]);
-    } else {
-      collection.push(item);
-    }
-  });
-  return map;
-}
+let filtros = document.getElementById("buscar");
+filtros.onclick = function () {
+  let buscador = document.getElementById("buscador");
 
-// const filtros = groupBy(productsList, (x) => x.marca);
+  let productosFiltrados = productsList.filter(
+    (p) =>
+      p.nombre.toLowerCase().includes(buscador.value.toLowerCase()) ||
+      p.categoria.toLowerCase().includes(buscador.value.toLowerCase()) ||
+      p.marca.toLowerCase().includes(buscador.value.toLowerCase())
+  );
 
-// console.log(filtros.keys((x) => console.log(x)));
-
-// filtros.forEach((x) => console.log(x));
-
-let divFiltros = document.createElement("div");
+  console.log(productosFiltrados);
+};
 
 let divProductos = document.getElementById("productos");
 
